@@ -9,7 +9,7 @@ logging.basicConfig(
     filename=LOG_FILENAME,
     level=logging.INFO,
     format="[%(asctime)s] %(levelname)s: %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
+    datefmt="%Y-%m-%d %H:%M:%S" # Esta línea de código se utiliza para definir el formato en el que se mostrará la fecha y la hora dentro del archivo de registros (.log).
 )
 
 # 2. EXCEPCIONES PERSONALIZADAS Y ENCADENAMIENTO
