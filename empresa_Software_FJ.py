@@ -11,7 +11,6 @@ logging.basicConfig(
     format="[%(asctime)s] %(levelname)s: %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S" # Esta línea de código se utiliza para definir el formato en el que se mostrará la fecha y la hora dentro del archivo de registros (.log).
 )
-
 # 2. EXCEPCIONES PERSONALIZADAS Y ENCADENAMIENTO
 class SoftwareFJError(Exception):
     """Excepción base para todos los errores del sistema."""
@@ -84,3 +83,5 @@ class Cliente(EntidadSistema):
 
     def obtener_detalle(self) -> str:
         return f"Cliente: {self.__nombre} | gmail: {self.__gmail} | Tel: {self.__telefono}"
+    
+    
