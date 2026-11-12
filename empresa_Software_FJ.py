@@ -83,5 +83,76 @@ class Cliente(EntidadSistema):
 
     def obtener_detalle(self) -> str:
         return f"Cliente: {self.__nombre} | gmail: {self.__gmail} | Tel: {self.__telefono}"
+
+# ==========================================
+# 5. CLASE ABSTRACTA SERVICIO Y DERIVADOS
+# ==========================================
+class Servicio(EntidadSistema, ABC):
+    """Clase abstracta base que define la estructura general de cualquier servicio."""
+
+    def __init__(self, identificador: str, nombre_servicio: str, costo_base: float, disponible: bool = True):
+        # Inicializa el identificador heredado de EntidadSistema y los atributos del servicio
+        super().__init__(identificador)
+        self.nombre_servicio = nombre_servicio
+        self.costo_base = costo_base
+        self.disponible = disponible
+
+    @property
+    def costo_base(self):
+        # Getter que permite consultar el atributo privado __costo_base de forma segura
+        return self.__costo_base
+
+    @costo_base.setter
+    def costo_base(self, valor):
+        # Setter que valida que el costo base no sea negativo antes de asignarlo
+        if valor < 0:
+            raise ServicioNoDisponibleError("El costo base no puede ser negativo.")
+        self.__costo_base = float(valor)
+
+    @abstractmethod
+    def calcular_costo(self, *args, **kwargs) -> float:
+        """Método polimórfico obligatorio para calcular costos en las clases hijas."""
+        pass
+
+    @abstractmethod
+    def describir(self) -> str:
+        """Método polimórfico obligatorio para describir cada tipo de servicio."""
+        pass
+
+    def obtener_detalle(self) -> str:
+        # Retorna una cadena formateada con el nombre del servicio y su costo base
+        return f"Servicio: {self.nombre_servicio} | Costo Base: ${self.__costo_base:.2f}"
+
+
+# Servicio 1: Reserva de Salas
+class ReservaSalas(Servicio):
+    """Clase derivada de Servicio especializada en el alquiler y reserva de salas."""
+
+    def __init__(self, identificador: str, nombre_servicio: str, costo_base: float, capacidad: int):
+        # Llama al constructor de Servicio y añade la capacidad de personas de la sala
+        super().__init__(identificador, nombre_servicio, costo_base)
+        self.capacidad = capacidad
+
+    # Método sobrecargado mediante argumentos opcionales / condicionales
+    def calcular_costo(self, horas: float = 1.0, aplicar_impuesto: bool = True, descuento_porcentaje: float = 0.0) -> float:
+        # Calcula el costo total validando horas, aplicando descuentos opcionales e IVA del 19%
+        try:
+            if horas <= 0:
+                raise ValueError("Las horas de reserva deben ser mayores a cero.")
+            
+            subtotal = self.costo_base * horas
+            if descuento_porcentaje > 0:
+                subtotal -= subtotal * (descuento_porcentaje / 100)
+            
+            if aplicar_impuesto:
+                subtotal *= 1.19  # IVA 19%
+            return round(subtotal, 2)
+        except Exception as e:
+            # Encadena cualquier error de cálculo dentro de la excepción personalizada del sistema
+            raise ServicioNoDisponibleError(f"Error al calcular costo de sala: {e}") from e
+
+    def describir(self) -> str:
+        # Sobrescribe el método abstracto incluyendo la capacidad específica de la sala
+        return f"[Sala de Reuniones] Capacidad: {self.capacidad} personas. {self.obtener_detalle()}"
     
     
