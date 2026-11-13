@@ -154,5 +154,52 @@ class ReservaSalas(Servicio):
     def describir(self) -> str:
         # Sobrescribe el método abstracto incluyendo la capacidad específica de la sala
         return f"[Sala de Reuniones] Capacidad: {self.capacidad} personas. {self.obtener_detalle()}"
-    
-    
+    # 6. CLASE RESERVA (Gestión integral y bloques try/except/else/finally)
+class Reserva:
+    def __init__(self, id_reserva: str, cliente: Cliente, servicio: Servicio, cantidad_tiempo: float):
+        self.id_reserva = id_reserva
+        self.cliente = cliente
+        self.servicio = servicio
+        self.cantidad_tiempo = cantidad_tiempo
+        self.estado = "Creada"  # Creada, Confirmada, Cancelada, Procesada
+
+    def confirmar_reserva(self, **kwargs):
+        """Implementa bloques try/except/else/finally y manejo robusto."""
+        logging.info(f"Iniciando procesamiento de reserva {self.id_reserva}...")
+        try:
+            if not self.servicio.disponible:
+                raise ServicioNoDisponibleError(f"El servicio '{self.servicio.nombre_servicio}' no se encuentra disponible.")
+            
+            # Cálculo del costo usando polimorfismo
+            if isinstance(self.servicio, ReservaSalas):
+                self.costo_final = self.servicio.calcular_costo(horas=self.cantidad_tiempo, **kwargs)
+            elif isinstance(self.servicio, AlquilerEquipos):
+                self.costo_final = self.servicio.calcular_costo(dias=int(self.cantidad_tiempo), **kwargs)
+            elif isinstance(self.servicio, AsesoriaEspecializada):
+                self.costo_final = self.servicio.calcular_costo(sesiones=int(self.cantidad_tiempo), **kwargs)
+            else:
+                raise ReservaInvalidaError("Tipo de servicio desconocido para procesar la reserva.")
+            
+            self.estado = "Confirmada"
+            
+        except (ServicioNoDisponibleError, ReservaInvalidaError, ValueError) as e:
+            self.estado = "Fallida"
+            logging.error(f"Error controlado en reserva {self.id_reserva}: {e}")
+            raise ReservaInvalidaError(f"No se pudo confirmar la reserva {self.id_reserva}") from e
+        
+        else:
+            # Se ejecuta solo si NO hubo excepciones
+            logging.info(f"Reserva {self.id_reserva} confirmada con éxito. Costo total: ${self.costo_final}")
+            print(f" -> [ÉXITO] Reserva {self.id_reserva} procesada correctamente para {self.cliente.nombre}. Total: ${self.costo_final}")
+            
+        finally:
+            # Se ejecuta siempre (auditoría / cierre de operación)
+            logging.info(f"Transacción de reserva {self.id_reserva} finalizada. Estado actual: {self.estado}\n")
+
+    def cancelar_reserva(self):
+        if self.estado == "Cancelada":
+            print(f" -> [AVISO] La reserva {self.id_reserva} ya estaba cancelada.")
+            return
+        self.estado = "Cancelada"
+        logging.warning(f"La reserva {self.id_reserva} ha sido cancelada por el usuario.")
+        print(f" -> [CANCELADA] La reserva {self.id_reserva} se canceló exitosamente.")
