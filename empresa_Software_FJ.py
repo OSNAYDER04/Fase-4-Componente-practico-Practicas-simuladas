@@ -219,7 +219,7 @@ def ejecutar_simulacion():
         # Operación 1: Registro de Cliente Válido y Reserva Exitosa (Sala de Reuniones)
         lambda: (
             print("1. [Operación Válida] Creando cliente y reservando sala..."),
-            cli := Cliente("C001", "Carlos Mendoza", "carlos.mendoza@email.com", "3001234567"),
+            cli := Cliente("C001", "Carlos Mendoza", "carlos.mendoza@gmail.com", "3001234567"),
             res := Reserva("R-001", cli, sala_vip, cantidad_tiempo=3.0),
             res.confirmar_reserva(aplicar_impuesto=True, descuento_porcentaje=10.0)
         ),
@@ -227,13 +227,13 @@ def ejecutar_simulacion():
         # Operación 2: Error por Datos Inválidos en Cliente (Nombre muy corto)
         lambda: (
             print("2. [Operación Inválida] Intentando crear cliente con nombre corto..."),
-            Cliente("C002", "Jo", "jo@email.com", "3119876543")
+            Cliente("C002", "Jo", "jo@gmail.com", "3119876543")
         ),
 
         # Operación 3: Alquiler de Equipo Exitoso
         lambda: (
             print("3. [Operación Válida] Alquiler de equipo informático..."),
-            cli := Cliente("C003", "María Gómez", "maria.gomez@email.com", "3204567890"),
+            cli := Cliente("C003", "María Gómez", "maria.gomez@gmail.com", "3204567890"),
             res := Reserva("R-002", cli, equipo_mac, cantidad_tiempo=5.0),
             res.confirmar_reserva(seguro_adicional=True)
         ),
@@ -247,7 +247,7 @@ def ejecutar_simulacion():
         # Operación 5: Asesoría Especializada Exitosa (Con Urgencia Alta)
         lambda: (
             print("5. [Operación Válida] Solicitando asesoría especializada urgente..."),
-            cli := Cliente("C005", "Lucia Fernandez", "lucia.f@email.com", "3187654321"),
+            cli := Cliente("C005", "Lucia Fernandez", "lucia.f@gmail.com", "3187654321"),
             res := Reserva("R-003", cli, asesoria_tec, cantidad_tiempo=2.0),
             res.confirmar_reserva(nivel_urgencia="alto")
         ),
