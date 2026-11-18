@@ -272,3 +272,28 @@ def ejecutar_simulacion():
             # Se ejecuta el método de cancelación para cambiar el estado de la reserva
             res.cancelar_reserva()
         ),
+    # Operación 8: Error por Teléfono con caracteres alfabéticos
+        lambda: (
+            print("8. [Operación Inválida] Cliente con teléfono que contiene letras..."),
+            Cliente("C008", "Raúl Castro", "raul@gmail.com", "300ABC4567")
+        ),
+
+        # Operación 9: Intento de reserva en un servicio marcado como No Disponible
+        lambda: (
+            print("9. [Operación Inválida] Reservando un servicio fuera de servicio..."),
+            setattr(sala_vip, "disponible", False), # Inhabilitamos el servicio
+            cli := Cliente("C009", "Andrea Rincón", "andrea@gmail.com", "3109998877"),
+            res := Reserva("R-006", cli, sala_vip, cantidad_tiempo=1.0),
+            res.confirmar_reserva()
+        ),
+
+        # Operación 10: Operación Válida Final (Restaurando disponibilidad y haciendo nueva reserva)
+        lambda: (
+            print("10. [Operación Válida] Restaurando servicio y generando reserva normal..."),
+            setattr(sala_vip, "disponible", True),
+            cli := Cliente("C010", "Gabriel García", "gabriel@gmail.com", "3145556677"),
+            res := Reserva("R-007", cli, sala_vip, cantidad_tiempo=2.5),
+            res.confirmar_reserva(aplicar_impuesto=True, descuento_porcentaje=5.0)
+        )
+    ]
+    
