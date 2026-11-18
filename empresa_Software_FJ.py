@@ -251,3 +251,24 @@ def ejecutar_simulacion():
             res := Reserva("R-003", cli, asesoria_tec, cantidad_tiempo=2.0),
             res.confirmar_reserva(nivel_urgencia="alto")
         ),
+
+# Operación 6: Validación de excepción ante duración inválida (tiempo igual a cero)
+        lambda: (
+            print("6. [Operación Inválida] Reserva con duración inválida (cero horas)..."),
+            # Se instancia un cliente con datos válidos
+            cli := Cliente("C006", "Pedro Picapiedra", "pedro@gmail.com", "3011112222"),
+            # Se intenta crear y confirmar una reserva con 0 horas para disparar ReservaInvalidaError
+            res := Reserva("R-004", cli, sala_vip, cantidad_tiempo=0.0),
+            res.confirmar_reserva()
+        ),
+
+        # Operación 7: Flujo válido de creación y posterior cancelación de una reserva
+        lambda: (
+            print("7. [Operación Válida] Cancelación de reserva previamente creada..."),
+            # Se registra un nuevo cliente válido en el sistema
+            cli := Cliente("C007", "Sofía Vergara", "sofia@gmail.com", "3023334444"),
+            # Se crea la reserva asociando correctamente al cliente (cli) y el servicio (equipo_mac)
+            res := Reserva("R-005", cli, equipo_mac, cantidad_tiempo=2.0),
+            # Se ejecuta el método de cancelación para cambiar el estado de la reserva
+            res.cancelar_reserva()
+        ),
