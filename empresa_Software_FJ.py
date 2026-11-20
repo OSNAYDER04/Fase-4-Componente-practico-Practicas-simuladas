@@ -296,4 +296,18 @@ def ejecutar_simulacion():
             res.confirmar_reserva(aplicar_impuesto=True, descuento_porcentaje=5.0)
         )
     ]
-    
+# Ejecutor iterativo con manejo global para garantizar que el sistema nunca colapse
+    for i, op in enumerate(operaciones, 1):
+        print(f"\n--- Ejecutando Operación {i} ---")
+        try:
+            op()
+        except SoftwareFJError as se:
+            print(f" -> [CONTROLADOR DE EXCEPCIÓN PERSONALIZADA]: {se}")
+        except Exception as ex:
+            print(f" -> [ERROR INESPERADO CAPTURADO]: {ex}")
+        print("-" * 50)
+
+    print(f"\nSimulación finalizada. Todos los eventos y errores fueron registrados en '{LOG_FILENAME}'.")
+
+if __name__ == "__main__":
+    ejecutar_simulacion()    
