@@ -126,16 +126,12 @@ class Servicio(EntidadSistema, ABC):
 
 # Servicio 1: Reserva de Salas
 class ReservaSalas(Servicio):
-    """Clase derivada de Servicio especializada en el alquiler y reserva de salas."""
-
     def __init__(self, identificador: str, nombre_servicio: str, costo_base: float, capacidad: int):
-        # Llama al constructor de Servicio y añade la capacidad de personas de la sala
         super().__init__(identificador, nombre_servicio, costo_base)
         self.capacidad = capacidad
 
     # Método sobrecargado mediante argumentos opcionales / condicionales
     def calcular_costo(self, horas: float = 1.0, aplicar_impuesto: bool = True, descuento_porcentaje: float = 0.0) -> float:
-        # Calcula el costo total validando horas, aplicando descuentos opcionales e IVA del 19%
         try:
             if horas <= 0:
                 raise ValueError("Las horas de reserva deben ser mayores a cero.")
@@ -148,13 +144,48 @@ class ReservaSalas(Servicio):
                 subtotal *= 1.19  # IVA 19%
             return round(subtotal, 2)
         except Exception as e:
-            # Encadena cualquier error de cálculo dentro de la excepción personalizada del sistema
             raise ServicioNoDisponibleError(f"Error al calcular costo de sala: {e}") from e
 
     def describir(self) -> str:
-        # Sobrescribe el método abstracto incluyendo la capacidad específica de la sala
         return f"[Sala de Reuniones] Capacidad: {self.capacidad} personas. {self.obtener_detalle()}"
-    # 6. CLASE RESERVA (Gestión integral y bloques try/except/else/finally)
+
+
+# Servicio 2: Alquiler de Equipos
+class AlquilerEquipos(Servicio):
+    def __init__(self, identificador: str, nombre_servicio: str, costo_base: float, tipo_equipo: str):
+        super().__init__(identificador, nombre_servicio, costo_base)
+        self.tipo_equipo = tipo_equipo
+
+    def calcular_costo(self, dias: int = 1, seguro_adicional: bool = False) -> float:
+        if dias <= 0:
+            raise ValueError("Los días de alquiler deben ser mayores a cero.")
+        
+        total = (self.costo_base * dias)
+        if seguro_adicional:
+            total += 15.0 * dias  # Costo fijo de seguro por día
+        return round(total, 2)
+
+    def describir(self) -> str:
+        return f"[Alquiler de Equipo] Tipo: {self.tipo_equipo}. {self.obtener_detalle()}"
+
+
+# Servicio 3: Asesorías Especializadas
+class AsesoriaEspecializada(Servicio):
+    def __init__(self, identificador: str, nombre_servicio: str, costo_base: float, especialista: str):
+        super().__init__(identificador, nombre_servicio, costo_base)
+        self.especialista = especialista
+
+    def calcular_costo(self, sesiones: int = 1, nivel_urgencia: str = "normal") -> float:
+        if sesiones <= 0:
+            raise ValueError("El número de sesiones debe ser mayor a cero.")
+        
+        multiplicador = 1.5 if nivel_urgencia.lower() == "alto" else 1.0
+        total = self.costo_base * sesiones * multiplicador
+        return round(total, 2)
+
+    def describir(self) -> str:
+        return f"[Asesoría Especializada] Experto: {self.especialista}. {self.obtener_detalle()}"
+# 6. CLASE RESERVA (Gestión integral y bloques try/except/else/finally)
 class Reserva:
     def __init__(self, id_reserva: str, cliente: Cliente, servicio: Servicio, cantidad_tiempo: float):
         self.id_reserva = id_reserva
@@ -311,3 +342,4 @@ def ejecutar_simulacion():
 
 if __name__ == "__main__":
     ejecutar_simulacion()    
+
