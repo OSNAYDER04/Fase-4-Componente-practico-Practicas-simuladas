@@ -5,10 +5,9 @@ Aplicación desarrollada en **Python** basada en Programación Orientada a Objet
 
 ##  Integrantes del Equipo
 * Nicol Alexandra Calderin Avila
-* Juan Sebastian Cardenas Guerrero
 * Alexander Daniel Cuadro Pallares 
 * Osnayder Perez Molina
-* Jeffrey Salazar Contreras
+  
 
 ##  Características Principales
 * **Arquitectura POO:** Uso de clases abstractas (`EntidadSistema`, `Servicio`), herencia, polimorfismo y encapsulación con validaciones mediante propiedades (`@property`).
